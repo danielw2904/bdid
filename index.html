@@ -580,7 +580,16 @@ Control Group:  Never Treated,  Anticipation Periods:  0
 Estimation Method:  Outcome Regression</code></pre>
 </div>
 </div>
-<p>In this project…</p>
+<p>In this project I propose a Bayesian estimation framework for the <span class="math inline">\(ATT(g,t)\)</span>. The Bayesian paradigm allows for different treatment of pre- and post-treatment estimation. As we want to show that parameters do not systematically deviate from <span class="math inline">\(0\)</span> (pre-test for parallel trends) in the pre-period the cautious prior choice is a diffuse prior with a random walk law of motion to allow deviations to accumulate over time and naturally handle missing data:</p>
+<p><span class="math display">\[\begin{align}
+    \tau^{pre}_0 &amp;= \mathcal{N}(0, \sigma^2), \quad \sigma^2 &gt;&gt; 0 \\
+    \tau^{pre}_t &amp;= \tau^{pre}_{t-1} + w_t, \quad w_t \sim \mathcal{N}(0, \sigma^2)
+\end{align}\]</span></p>
+<p>In order to assess whether the trends deviate substantially the researcher can define a “region of practical equivalence” <span class="citation" data-cites="makowskiBayestestRDescribingEffects2019">(“ROPE,” <a href="#ref-makowskiBayestestRDescribingEffects2019" role="doc-biblioref">Makowski, Ben-Shachar, and Lüdecke 2019</a>)</span> around <span class="math inline">\(0\)</span> and easily calculate the posterior probability of being within the ROPE. In addition, if one is uncomfortable with defining a region of equivalence, one can look at the Savage-Dickey density ratio <span class="citation" data-cites="wagenmakersBayesianHypothesisTesting2010a dickeyWeightedLikelihoodRatio1970">(SDR, <a href="#ref-wagenmakersBayesianHypothesisTesting2010a" role="doc-biblioref">Wagenmakers et al. 2010</a>; <a href="#ref-dickeyWeightedLikelihoodRatio1970" role="doc-biblioref">Dickey and Lientz 1970</a>)</span> to see if the data provides additional evidence (over the prior) for the hypothesis of no pre-treatment trend violations (essentially if the posterior density is higher at <span class="math inline">\(0\)</span> than the prior density<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>):</p>
+<p><span class="math display">\[
+SDR_t = \frac{p(\tau^{pre}_t = 0 | y, \tau^{pre}_{t-1})}{p(\tau^{pre}_t = 0 |  \tau^{pre}_{t-1})}
+\]</span></p>
+<p>One could then choose <span class="math inline">\(\underset{t \in [0, T^{pre}]}{arg\ max}\ SDR_t\)</span> and see if the post-treatment effect would still hold if there was a similar trend violation (or a multiple thereof) <span class="citation" data-cites="rambachanMoreCredibleApproach2023a">(similar to <a href="#ref-rambachanMoreCredibleApproach2023a" role="doc-biblioref">Rambachan and Roth 2023</a>)</span>.</p>
 
 </section>
 
@@ -595,14 +604,26 @@ Callaway, Brantly, and Pedro H. C. Sant’Anna. 2021. <span>“Difference-in-Dif
 <div id="ref-cameron2005microeconometrics" class="csl-entry" role="listitem">
 Cameron, A Colin, and Pravin K Trivedi. 2005. <em>Microeconometrics: Methods and Applications</em>. Cambridge university press.
 </div>
+<div id="ref-dickeyWeightedLikelihoodRatio1970" class="csl-entry" role="listitem">
+Dickey, James M., and B. P. Lientz. 1970. <span>“The Weighted Likelihood Ratio, Sharp Hypotheses about Chances, the Order of a Markov Chain.”</span> <em>The Annals of Mathematical Statistics</em> 41 (1): 214–26. <a href="https://doi.org/10.1214/aoms/1177697203">https://doi.org/10.1214/aoms/1177697203</a>.
+</div>
 <div id="ref-goodman-baconDifferenceindifferencesVariationTreatment2021c" class="csl-entry" role="listitem">
 Goodman-Bacon, Andrew. 2021. <span>“Difference-in-Differences with Variation in Treatment Timing.”</span> <em>Journal of Econometrics</em>, Themed issue: Treatment effect 1, 225 (2): 254–77. <a href="https://doi.org/10.1016/j.jeconom.2021.03.014">https://doi.org/10.1016/j.jeconom.2021.03.014</a>.
+</div>
+<div id="ref-makowskiBayestestRDescribingEffects2019" class="csl-entry" role="listitem">
+Makowski, Dominique, Mattan S. Ben-Shachar, and Daniel Lüdecke. 2019. <span>“<span class="nocase">bayestestR</span>: Describing Effects and Their Uncertainty, Existence and Significance Within the Bayesian Framework.”</span> <em>Journal of Open Source Software</em> 4 (40): 1541. <a href="https://doi.org/10.21105/joss.01541">https://doi.org/10.21105/joss.01541</a>.
+</div>
+<div id="ref-rambachanMoreCredibleApproach2023a" class="csl-entry" role="listitem">
+Rambachan, Ashesh, and Jonathan Roth. 2023. <span>“A More Credible Approach to Parallel Trends.”</span> <em>Review of Economic Studies</em> 90 (5): 2555–91. <a href="https://doi.org/10.1093/restud/rdad018">https://doi.org/10.1093/restud/rdad018</a>.
 </div>
 <div id="ref-rubinCausalInferenceUsing2005" class="csl-entry" role="listitem">
 Rubin, Donald B. 2005. <span>“Causal Inference Using Potential Outcomes: Design, Modeling, Decisions.”</span> <em>Journal of the American Statistical Association</em> 100 (469): 322–31. <a href="https://www.jstor.org/stable/27590541">https://www.jstor.org/stable/27590541</a>.
 </div>
 <div id="ref-sunEstimatingDynamicTreatment2021a" class="csl-entry" role="listitem">
 Sun, Liyang, and Sarah Abraham. 2021. <span>“Estimating Dynamic Treatment Effects in Event Studies with Heterogeneous Treatment Effects.”</span> <em>Journal of Econometrics</em>, Themed issue: Treatment effect 1, 225 (2): 175–99. <a href="https://doi.org/10.1016/j.jeconom.2020.09.006">https://doi.org/10.1016/j.jeconom.2020.09.006</a>.
+</div>
+<div id="ref-wagenmakersBayesianHypothesisTesting2010a" class="csl-entry" role="listitem">
+Wagenmakers, Eric-Jan, Tom Lodewyckx, Himanshu Kuriyal, and Raoul Grasman. 2010. <span>“Bayesian Hypothesis Testing for Psychologists: A Tutorial on the Savage–Dickey Method.”</span> <em>Cognitive Psychology</em> 60 (3): 158–89. <a href="https://doi.org/10.1016/j.cogpsych.2009.12.001">https://doi.org/10.1016/j.cogpsych.2009.12.001</a>.
 </div>
 <div id="ref-wassersteinMovingWorld052019" class="csl-entry" role="listitem">
 Wasserstein, Ronald L., Allen L. Schirm, and Nicole A. Lazar. 2019. <span>“Moving to a World Beyond <span>‘p <span>&lt;</span> 0.05’</span>.”</span> <em>The American Statistician</em> 73 (March): 1–19. <a href="https://doi.org/10.1080/00031305.2019.1583913">https://doi.org/10.1080/00031305.2019.1583913</a>.
@@ -614,6 +635,7 @@ Wasserstein, Ronald L., Allen L. Schirm, and Nicole A. Lazar. 2019. <span>“Mov
 <li id="fn2"><p>The scenario is completely fictitious and any similarities to actual countries are purely coincidental.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>See e.g., <span class="citation" data-cites="cameron2005microeconometrics">Cameron and Trivedi (<a href="#ref-cameron2005microeconometrics" role="doc-biblioref">2005, 703f</a>.)</span> for details on estimation of fixed effects models.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Their notation is extremely complicated so I will atempt to present a simplified version<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>This has the caveat that a posterior density based on the MCMC draws has to be estimated.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main>
 <!-- /main column -->
