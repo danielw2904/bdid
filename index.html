@@ -111,6 +111,13 @@ div.csl-indent {
   </ul></li>
   <li><a href="#recent-developments-in-the-difference-in-differences-literature" id="toc-recent-developments-in-the-difference-in-differences-literature" class="nav-link" data-scroll-target="#recent-developments-in-the-difference-in-differences-literature">Recent developments in the Difference-in-Differences literature</a></li>
   <li><a href="#inspiration-for-the-project-at-hand" id="toc-inspiration-for-the-project-at-hand" class="nav-link" data-scroll-target="#inspiration-for-the-project-at-hand">Inspiration for the project at hand</a></li>
+  <li><a href="#benefits-of-bayesian-did" id="toc-benefits-of-bayesian-did" class="nav-link" data-scroll-target="#benefits-of-bayesian-did">Benefits of Bayesian-DiD</a>
+  <ul class="collapse">
+  <li><a href="#asessing-pre-treatment-trend-violations" id="toc-asessing-pre-treatment-trend-violations" class="nav-link" data-scroll-target="#asessing-pre-treatment-trend-violations">Asessing pre-treatment trend violations</a></li>
+  <li><a href="#treating-trend-violations-honestly" id="toc-treating-trend-violations-honestly" class="nav-link" data-scroll-target="#treating-trend-violations-honestly">Treating trend violations honestly</a></li>
+  </ul></li>
+  <li><a href="#benefits" id="toc-benefits" class="nav-link" data-scroll-target="#benefits">Benefits</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
   </ul>
 </nav>
 </div>
@@ -580,16 +587,52 @@ Control Group:  Never Treated,  Anticipation Periods:  0
 Estimation Method:  Outcome Regression</code></pre>
 </div>
 </div>
-<p>In this project I propose a Bayesian estimation framework for the <span class="math inline">\(ATT(g,t)\)</span>. The Bayesian paradigm allows for different treatment of pre- and post-treatment estimation. As we want to show that parameters do not systematically deviate from <span class="math inline">\(0\)</span> (pre-test for parallel trends) in the pre-period the cautious prior choice is a diffuse prior with a random walk law of motion to allow deviations to accumulate over time and naturally handle missing data:</p>
+</section>
+<section id="benefits-of-bayesian-did" class="level1">
+<h1>Benefits of Bayesian-DiD</h1>
+<p>In this project I propose a Bayesian estimation framework for the <span class="math inline">\(ATT(g,t)\)</span>. The Bayesian paradigm allows for different treatment of pre- and post-treatment estimation. Specifically, as we want to show that trends do not systematically deviate from <span class="math inline">\(0\)</span> in the pre-period (pre-test for parallel trends) the cautious prior choice is a diffuse prior with a random walk law of motion to allow deviations to accumulate over time and naturally handle missing data:</p>
 <p><span class="math display">\[\begin{align}
-    \tau^{pre}_0 &amp;= \mathcal{N}(0, \sigma^2), \quad \sigma^2 &gt;&gt; 0 \\
-    \tau^{pre}_t &amp;= \tau^{pre}_{t-1} + w_t, \quad w_t \sim \mathcal{N}(0, \sigma^2)
+    \tau^{pre}_0 &amp;= \mathcal{N}(0, \sigma_{\tau}^2), \quad \sigma_{\tau}^2 &gt;&gt; 0 \\
+    \tau^{pre}_t &amp;= \tau^{pre}_{t-1} + w_t, \quad w_t \sim \mathcal{N}(0, \sigma_{\tau}^2)
 \end{align}\]</span></p>
+<p>In the post-treatment period I suggest a shrinkage prior</p>
+<section id="asessing-pre-treatment-trend-violations" class="level2">
+<h2 class="anchored" data-anchor-id="asessing-pre-treatment-trend-violations">Asessing pre-treatment trend violations</h2>
 <p>In order to assess whether the trends deviate substantially the researcher can define a “region of practical equivalence” <span class="citation" data-cites="makowskiBayestestRDescribingEffects2019">(“ROPE,” <a href="#ref-makowskiBayestestRDescribingEffects2019" role="doc-biblioref">Makowski, Ben-Shachar, and Lüdecke 2019</a>)</span> around <span class="math inline">\(0\)</span> and easily calculate the posterior probability of being within the ROPE. In addition, if one is uncomfortable with defining a region of equivalence, one can look at the Savage-Dickey density ratio <span class="citation" data-cites="wagenmakersBayesianHypothesisTesting2010a dickeyWeightedLikelihoodRatio1970">(SDR, <a href="#ref-wagenmakersBayesianHypothesisTesting2010a" role="doc-biblioref">Wagenmakers et al. 2010</a>; <a href="#ref-dickeyWeightedLikelihoodRatio1970" role="doc-biblioref">Dickey and Lientz 1970</a>)</span> to see if the data provides additional evidence (over the prior) for the hypothesis of no pre-treatment trend violations (essentially if the posterior density is higher at <span class="math inline">\(0\)</span> than the prior density<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>):</p>
+</section>
+<section id="treating-trend-violations-honestly" class="level2">
+<h2 class="anchored" data-anchor-id="treating-trend-violations-honestly">Treating trend violations honestly</h2>
 <p><span class="math display">\[
 SDR_t = \frac{p(\tau^{pre}_t = 0 | y, \tau^{pre}_{t-1})}{p(\tau^{pre}_t = 0 |  \tau^{pre}_{t-1})}
 \]</span></p>
-<p>One could then choose <span class="math inline">\(\underset{t \in [0, T^{pre}]}{arg\ max}\ SDR_t\)</span> and see if the post-treatment effect would still hold if there was a similar trend violation (or a multiple thereof) <span class="citation" data-cites="rambachanMoreCredibleApproach2023a">(similar to <a href="#ref-rambachanMoreCredibleApproach2023a" role="doc-biblioref">Rambachan and Roth 2023</a>)</span>.</p>
+<p>One could choose <span class="math inline">\(t\)</span> using <span class="math inline">\(\underset{t \in [0, T^{pre}]}{arg\ min}\ SDR_t\)</span> and see if the post-treatment effect <span class="math inline">\(\tau_{k}^{post}\)</span> would still hold if there was a similar trend violation (or a multiple <span class="math inline">\(m\)</span> thereof) post-treatment <span class="citation" data-cites="rambachanMoreCredibleApproach2023a">(similar to <a href="#ref-rambachanMoreCredibleApproach2023a" role="doc-biblioref">Rambachan and Roth 2023</a>)</span>:</p>
+<p><span class="math display">\[
+\tau^{honest}_{k} | \tau_t^{pre} = \tau^{post}_{k} - m \times \tau_{t}^{pre}
+\]</span></p>
+<p>for any post treatment period <span class="math inline">\(k\)</span>. In order to assess the pracitical importance of the effect the researcher can look at the posterior density below/above ROPE.</p>
+</section>
+</section>
+<section id="benefits" class="level1">
+<h1>Benefits</h1>
+<ul>
+<li>Natural treatment of missing data in the pre-treatment period</li>
+<li>Honest approach to trend violations
+<ul>
+<li>ROPE</li>
+<li><span class="citation" data-cites="rambachanMoreCredibleApproach2023a">Rambachan and Roth (<a href="#ref-rambachanMoreCredibleApproach2023a" role="doc-biblioref">2023</a>)</span></li>
+</ul></li>
+<li>Post treatment shrinkage of effects</li>
+</ul>
+</section>
+<section id="questions" class="level1">
+<h1>Questions</h1>
+<ul>
+<li>Combination of parameters
+<ul>
+<li>ATT over multiple time periods/groups</li>
+</ul></li>
+<li>Random walk prior correct to plug-in draw of previous estimate?</li>
+</ul>
 
 </section>
 
