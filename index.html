@@ -113,11 +113,11 @@ div.csl-indent {
   <li><a href="#inspiration-for-the-project-at-hand" id="toc-inspiration-for-the-project-at-hand" class="nav-link" data-scroll-target="#inspiration-for-the-project-at-hand">Inspiration for the project at hand</a></li>
   <li><a href="#benefits-of-bayesian-did" id="toc-benefits-of-bayesian-did" class="nav-link" data-scroll-target="#benefits-of-bayesian-did">Benefits of Bayesian-DiD</a>
   <ul class="collapse">
-  <li><a href="#asessing-pre-treatment-trend-violations" id="toc-asessing-pre-treatment-trend-violations" class="nav-link" data-scroll-target="#asessing-pre-treatment-trend-violations">Asessing pre-treatment trend violations</a></li>
+  <li><a href="#estimation" id="toc-estimation" class="nav-link" data-scroll-target="#estimation">Estimation</a></li>
+  <li><a href="#assessing-pre-treatment-trend-violations" id="toc-assessing-pre-treatment-trend-violations" class="nav-link" data-scroll-target="#assessing-pre-treatment-trend-violations">Assessing pre-treatment trend violations</a></li>
   <li><a href="#treating-trend-violations-honestly" id="toc-treating-trend-violations-honestly" class="nav-link" data-scroll-target="#treating-trend-violations-honestly">Treating trend violations honestly</a></li>
   </ul></li>
-  <li><a href="#benefits" id="toc-benefits" class="nav-link" data-scroll-target="#benefits">Benefits</a></li>
-  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
   </ul>
 </nav>
 </div>
@@ -357,12 +357,12 @@ div.csl-indent {
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>tau_did <span class="ot">&lt;-</span> delta_ys<span class="sc">$</span>y[<span class="dv">2</span>] <span class="sc">-</span> delta_ys<span class="sc">$</span>y[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><span class="math inline">\(\hat \tau_{did} =\)</span> 5.064.</p>
-<p>Typically, a time/unit fixed effects model is used for statistical inference:</p>
+<p>Typically, a time/unit fixed effects model is used for statistical inference<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>:</p>
 <p><span id="eq-fe-did"><span class="math display">\[
 y_{i, t} = \tau_{did}\ \mathbb{1}(\text{treated}_{i, t}) + \gamma_t + \alpha_i + \epsilon_{i,t}
 \tag{1}\]</span></span></p>
 <p>Note that in the estimation shown below the variable “treated” is defined at the unit level. Therefore, <span class="math inline">\(\mathbb{1}(\text{treated}_{i,t}) \equiv \mathbb{1}(\text{treated}_i) \times \mathbb{1}(\text{period = 1})\)</span>.</p>
-<p>A linear model with treatment and time dummies identifies <span class="math inline">\(\tau_{did}\)</span> but is less efficient (especially in case of high variance in outcomes between units). Both models can (eventually<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>) be estimated using OLS.</p>
+<p>A linear model with treatment and time dummies identifies <span class="math inline">\(\tau_{did}\)</span> but is less efficient (especially in case of high variance in outcomes between units). Both models can (eventually<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>) be estimated using OLS.</p>
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
@@ -529,7 +529,11 @@ y_{i, t} = \tau_{did}\ \mathbb{1}(\text{treated}_{i, t}) + \gamma_t + \alpha_i +
 </section>
 <section id="inspiration-for-the-project-at-hand" class="level1">
 <h1>Inspiration for the project at hand</h1>
-<p>To eliminate the above mentioned problem with time-varying adoption/treatment effects, <span class="citation" data-cites="callawayDifferenceinDifferencesMultipleTime2021a">Callaway and Sant’Anna (<a href="#ref-callawayDifferenceinDifferencesMultipleTime2021a" role="doc-biblioref">2021</a>)</span> extend the canonical model and define the group-time average treatment effect<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> <span class="math inline">\(ATT(g,t)\)</span>. A group <span class="math inline">\(g\)</span> is defined as all units receiving treatment at the same time. For each group <span class="math inline">\(g\)</span> and time <span class="math inline">\(t\)</span> a separate average treatment effect is estimated.</p>
+<p>To eliminate the above mentioned problem with time-varying adoption/treatment effects, <span class="citation" data-cites="callawayDifferenceinDifferencesMultipleTime2021a">Callaway and Sant’Anna (<a href="#ref-callawayDifferenceinDifferencesMultipleTime2021a" role="doc-biblioref">2021</a>)</span> extend the canonical model and define the group-time average treatment effect<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> <span class="math inline">\(ATT(g,t)\)</span>. A group <span class="math inline">\(g\)</span> is defined as all units receiving treatment at the same time. For each group <span class="math inline">\(g\)</span> and time <span class="math inline">\(t\)</span> a separate average treatment effect is estimated.</p>
+<p>In order to estimate <span class="math inline">\(ATT(g,t)\)</span> <span class="citation" data-cites="callawayDifferenceinDifferencesMultipleTime2021a">Callaway and Sant’Anna (<a href="#ref-callawayDifferenceinDifferencesMultipleTime2021a" role="doc-biblioref">2021</a>)</span> subset the data to contain only one treatment group <span class="math inline">\(g\)</span> and the controls at time <span class="math inline">\(t\)</span> and the last period before treatment (<span class="math inline">\(g-1\)</span>) and estimate essentially estimate the model called “dummy model” in the example above</p>
+<p><span class="math display">\[
+y_{i,k} = \alpha_{g,t} + \beta_{g,t} \mathbb{1}(i \in g) + \gamma_{g,t} \mathbb{1}(k = t) + \tau_{g,t} \mathbb{1}(k = t) \times \mathbb{1}(i \in g)
+\]</span></p>
 <p>A plot of the estimated coefficients for groups adopting treatment in 2004, 2006, and 2007 would look as follows:</p>
 <div class="cell" data-hash="overview_presentation_cache/html/unnamed-chunk-8_d94687eef2d0d86b9a6a88b1a4048a62">
 <details>
@@ -595,10 +599,19 @@ Estimation Method:  Outcome Regression</code></pre>
     \tau^{pre}_0 &amp;= \mathcal{N}(0, \sigma_{\tau}^2), \quad \sigma_{\tau}^2 &gt;&gt; 0 \\
     \tau^{pre}_t &amp;= \tau^{pre}_{t-1} + w_t, \quad w_t \sim \mathcal{N}(0, \sigma_{\tau}^2)
 \end{align}\]</span></p>
-<p>In the post-treatment period I suggest a shrinkage prior</p>
-<section id="asessing-pre-treatment-trend-violations" class="level2">
-<h2 class="anchored" data-anchor-id="asessing-pre-treatment-trend-violations">Asessing pre-treatment trend violations</h2>
-<p>In order to assess whether the trends deviate substantially the researcher can define a “region of practical equivalence” <span class="citation" data-cites="makowskiBayestestRDescribingEffects2019">(“ROPE,” <a href="#ref-makowskiBayestestRDescribingEffects2019" role="doc-biblioref">Makowski, Ben-Shachar, and Lüdecke 2019</a>)</span> around <span class="math inline">\(0\)</span> and easily calculate the posterior probability of being within the ROPE. In addition, if one is uncomfortable with defining a region of equivalence, one can look at the Savage-Dickey density ratio <span class="citation" data-cites="wagenmakersBayesianHypothesisTesting2010a dickeyWeightedLikelihoodRatio1970">(SDR, <a href="#ref-wagenmakersBayesianHypothesisTesting2010a" role="doc-biblioref">Wagenmakers et al. 2010</a>; <a href="#ref-dickeyWeightedLikelihoodRatio1970" role="doc-biblioref">Dickey and Lientz 1970</a>)</span> to see if the data provides additional evidence (over the prior) for the hypothesis of no pre-treatment trend violations (essentially if the posterior density is higher at <span class="math inline">\(0\)</span> than the prior density<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>):</p>
+<p>In the post-treatment period a shrinkage prior as in <span class="citation" data-cites="knausDynamicTripleGamma2023">Knaus and Frühwirth-Schnatter (<a href="#ref-knausDynamicTripleGamma2023" role="doc-biblioref">2023</a>)</span>, or <span class="citation" data-cites="cadonnaTripleGammaMdash2020">Cadonna, Frühwirth-Schnatter, and Knaus (<a href="#ref-cadonnaTripleGammaMdash2020" role="doc-biblioref">2020</a>)</span> is appropriate to require the data to provide sufficient evidence for a treatment effect.</p>
+<section id="estimation" class="level2">
+<h2 class="anchored" data-anchor-id="estimation">Estimation</h2>
+<p>For each treatment group <span class="math inline">\(g\)</span> the time-varying treatment effect <span class="math inline">\(\tau_{g,t}\)</span> can be estimated using a Gaussian state-space model <span class="citation" data-cites="mccauslandSimulationSmoothingState2011">(e.g., using <a href="#ref-mccauslandSimulationSmoothingState2011" role="doc-biblioref">McCausland, Miller, and Pelletier 2011</a>)</span> of the form</p>
+<p><span class="math display">\[\begin{align*}
+y_{g,t} &amp;= Z_{g,t} \theta_{g,t} + G_{g,t} u_{g,t} \\
+\theta_{t+1,g} &amp;= T_t \theta_{g,t} + H_{g,t} u_{g,t}, \quad u_{g,t} \sim N(0, I)
+\end{align*}\]</span></p>
+<p>where each <span class="math inline">\(y_{g,t}\)</span> consists of the outcomes for group <span class="math inline">\(g\)</span> as well as the control group for both periods <span class="math inline">\(t\)</span> and <span class="math inline">\(g-1\)</span> (the last pre-treatment period for group <span class="math inline">\(g\)</span>)<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. <span class="math inline">\(Z_{g,t}\)</span> consists of a vector of ones (intercept), the group indicator <span class="math inline">\(\mathbb{1}(i \in g)\)</span>, the period indicator <span class="math inline">\(\mathbb{1}(k = t)\)</span>, and the interaction <span class="math inline">\(\mathbb{1}(i \in g)\times \mathbb{1}(k = t)\)</span> which is used to calculate <span class="math inline">\(\tau_{g,t}\)</span>. <span class="math inline">\(\theta_{g,t} = [\alpha_{g,t}\ \beta_{g,t}\ \gamma_{g,t}\ \tau_{g,t}]^T\)</span> (note that the parameter names here indicate that the parameter is practically but not mathematically equivalent to the corresponding one earlier). <span class="math inline">\(T_t\)</span> is a matrix of <span class="math inline">\(0\)</span>s except for the <span class="math inline">\(4,4\)</span> element which is set to <span class="math inline">\(1\)</span> such that the nuisance parameters are drawn independently but the <span class="math inline">\(\tau\)</span>s follow a random walk by default. In order not to leak any information from the pre- to the post-treatment period two separate models can be estimated for <span class="math inline">\(t = [0, g-1)\)</span> and <span class="math inline">\(t=[g, T]\)</span>. This ensures that any pre-treatment parallel trend violations do not carry over to the post treatment period through the law of motion (any pre-treatment <span class="math inline">\(\tau_{g,t} \neq 0\)</span> is by a granger-causality argument not due to the treatment and indicates a trend violation; see below for how to deal with this situation).</p>
+</section>
+<section id="assessing-pre-treatment-trend-violations" class="level2">
+<h2 class="anchored" data-anchor-id="assessing-pre-treatment-trend-violations">Assessing pre-treatment trend violations</h2>
+<p>In order to assess whether the trends deviate substantially the researcher can define a “region of practical equivalence” <span class="citation" data-cites="makowskiBayestestRDescribingEffects2019">(“ROPE,” <a href="#ref-makowskiBayestestRDescribingEffects2019" role="doc-biblioref">Makowski, Ben-Shachar, and Lüdecke 2019</a>)</span> around <span class="math inline">\(0\)</span> and easily calculate the posterior probability of being within the ROPE. In addition, if one is uncomfortable with defining a region of equivalence, one can look at the Savage-Dickey density ratio <span class="citation" data-cites="wagenmakersBayesianHypothesisTesting2010a dickeyWeightedLikelihoodRatio1970">(SDR, <a href="#ref-wagenmakersBayesianHypothesisTesting2010a" role="doc-biblioref">Wagenmakers et al. 2010</a>; <a href="#ref-dickeyWeightedLikelihoodRatio1970" role="doc-biblioref">Dickey and Lientz 1970</a>)</span> to see if the data provides additional evidence (over the prior) for the hypothesis of no pre-treatment trend violations (essentially if the posterior density is higher at <span class="math inline">\(0\)</span> than the prior density<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>):</p>
 </section>
 <section id="treating-trend-violations-honestly" class="level2">
 <h2 class="anchored" data-anchor-id="treating-trend-violations-honestly">Treating trend violations honestly</h2>
@@ -607,31 +620,19 @@ SDR_t = \frac{p(\tau^{pre}_t = 0 | y, \tau^{pre}_{t-1})}{p(\tau^{pre}_t = 0 |  \
 \]</span></p>
 <p>One could choose <span class="math inline">\(t\)</span> using <span class="math inline">\(\underset{t \in [0, T^{pre}]}{arg\ min}\ SDR_t\)</span> and see if the post-treatment effect <span class="math inline">\(\tau_{k}^{post}\)</span> would still hold if there was a similar trend violation (or a multiple <span class="math inline">\(m\)</span> thereof) post-treatment <span class="citation" data-cites="rambachanMoreCredibleApproach2023a">(similar to <a href="#ref-rambachanMoreCredibleApproach2023a" role="doc-biblioref">Rambachan and Roth 2023</a>)</span>:</p>
 <p><span class="math display">\[
-\tau^{honest}_{k} | \tau_t^{pre} = \tau^{post}_{k} - m \times \tau_{t}^{pre}
+\hat \tau^{honest}_{k} | \hat \tau_t^{pre} = \hat \tau^{post}_{k} - m \times \hat \tau_{t}^{pre}
 \]</span></p>
 <p>for any post treatment period <span class="math inline">\(k\)</span>. In order to assess the pracitical importance of the effect the researcher can look at the posterior density below/above ROPE.</p>
 </section>
 </section>
-<section id="benefits" class="level1">
-<h1>Benefits</h1>
+<section id="summary" class="level1">
+<h1>Summary</h1>
+<p>In summary the Bayesian approach to the difference in difference has multiple benefits over existing models:</p>
 <ul>
-<li>Natural treatment of missing data in the pre-treatment period</li>
-<li>Honest approach to trend violations
-<ul>
-<li>ROPE</li>
-<li><span class="citation" data-cites="rambachanMoreCredibleApproach2023a">Rambachan and Roth (<a href="#ref-rambachanMoreCredibleApproach2023a" role="doc-biblioref">2023</a>)</span></li>
-</ul></li>
-<li>Post treatment shrinkage of effects</li>
-</ul>
-</section>
-<section id="questions" class="level1">
-<h1>Questions</h1>
-<ul>
-<li>Combination of parameters
-<ul>
-<li>ATT over multiple time periods/groups</li>
-</ul></li>
-<li>Random walk prior correct to plug-in draw of previous estimate?</li>
+<li>Testing for parallel trends in the pre-treatment period can be done in a more natural way <span class="citation" data-cites="callawayDifferenceinDifferencesMultipleTime2021a">(compare <a href="#ref-callawayDifferenceinDifferencesMultipleTime2021a" role="doc-biblioref">Callaway and Sant’Anna 2021</a>)</span>.</li>
+<li>Assessing whether treatment effects would still be large enough assuming a trend violation (e.g., proportional to the largest pre-treatment violoation) is trivial <span class="citation" data-cites="rambachanMoreCredibleApproach2023a">(compare <a href="#ref-rambachanMoreCredibleApproach2023a" role="doc-biblioref">Rambachan and Roth 2023</a>)</span>.</li>
+<li>Aggregating parameters over multiple periods is trivial (e.g., average treatment effect over all post-treament periods) <span class="citation" data-cites="callawayDifferenceinDifferencesMultipleTime2021a">(compare <a href="#ref-callawayDifferenceinDifferencesMultipleTime2021a" role="doc-biblioref">Callaway and Sant’Anna 2021</a>)</span>.</li>
+<li>Shrinkage priors allow for a more robust testing of treatment effects.</li>
 </ul>
 
 </section>
@@ -640,6 +641,9 @@ SDR_t = \frac{p(\tau^{pre}_t = 0 | y, \tau^{pre}_{t-1})}{p(\tau^{pre}_t = 0 |  \
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-altmanStatisticsNotesAbsence1995" class="csl-entry" role="listitem">
 Altman, Douglas G., and J. Martin Bland. 1995. <span>“Statistics Notes: Absence of Evidence Is Not Evidence of Absence.”</span> <em><span>BMJ</span></em> 311 (7003): 485. <a href="https://doi.org/10.1136/bmj.311.7003.485">https://doi.org/10.1136/bmj.311.7003.485</a>.
+</div>
+<div id="ref-cadonnaTripleGammaMdash2020" class="csl-entry" role="listitem">
+Cadonna, Annalisa, Sylvia Frühwirth-Schnatter, and Peter Knaus. 2020. <span>“Triple the Gamma&amp;mdash;a Unifying Shrinkage Prior for Variance and Variable Selection in Sparse State Space and <span>TVP</span> Models.”</span> <em>Econometrics</em> 8 (2): 20. <a href="https://doi.org/10.3390/econometrics8020020">https://doi.org/10.3390/econometrics8020020</a>.
 </div>
 <div id="ref-callawayDifferenceinDifferencesMultipleTime2021a" class="csl-entry" role="listitem">
 Callaway, Brantly, and Pedro H. C. Sant’Anna. 2021. <span>“Difference-in-Differences with Multiple Time Periods.”</span> <em>Journal of Econometrics</em>, Themed issue: Treatment effect 1, 225 (2): 200–230. <a href="https://doi.org/10.1016/j.jeconom.2020.12.001">https://doi.org/10.1016/j.jeconom.2020.12.001</a>.
@@ -653,8 +657,14 @@ Dickey, James M., and B. P. Lientz. 1970. <span>“The Weighted Likelihood Ratio
 <div id="ref-goodman-baconDifferenceindifferencesVariationTreatment2021c" class="csl-entry" role="listitem">
 Goodman-Bacon, Andrew. 2021. <span>“Difference-in-Differences with Variation in Treatment Timing.”</span> <em>Journal of Econometrics</em>, Themed issue: Treatment effect 1, 225 (2): 254–77. <a href="https://doi.org/10.1016/j.jeconom.2021.03.014">https://doi.org/10.1016/j.jeconom.2021.03.014</a>.
 </div>
+<div id="ref-knausDynamicTripleGamma2023" class="csl-entry" role="listitem">
+Knaus, Peter, and Sylvia Frühwirth-Schnatter. 2023. <span>“The Dynamic Triple Gamma Prior as a Shrinkage Process Prior for Time-Varying Parameter Models.”</span> <span>arXiv</span>. <a href="https://doi.org/10.48550/arXiv.2312.10487">https://doi.org/10.48550/arXiv.2312.10487</a>.
+</div>
 <div id="ref-makowskiBayestestRDescribingEffects2019" class="csl-entry" role="listitem">
 Makowski, Dominique, Mattan S. Ben-Shachar, and Daniel Lüdecke. 2019. <span>“<span class="nocase">bayestestR</span>: Describing Effects and Their Uncertainty, Existence and Significance Within the Bayesian Framework.”</span> <em>Journal of Open Source Software</em> 4 (40): 1541. <a href="https://doi.org/10.21105/joss.01541">https://doi.org/10.21105/joss.01541</a>.
+</div>
+<div id="ref-mccauslandSimulationSmoothingState2011" class="csl-entry" role="listitem">
+McCausland, William J., Shirley Miller, and Denis Pelletier. 2011. <span>“Simulation Smoothing for State–Space Models: A Computational Efficiency Analysis.”</span> <em>Computational Statistics &amp; Data Analysis</em> 55 (1): 199–212. <a href="https://doi.org/10.1016/j.csda.2010.07.009">https://doi.org/10.1016/j.csda.2010.07.009</a>.
 </div>
 <div id="ref-rambachanMoreCredibleApproach2023a" class="csl-entry" role="listitem">
 Rambachan, Ashesh, and Jonathan Roth. 2023. <span>“A More Credible Approach to Parallel Trends.”</span> <em>Review of Economic Studies</em> 90 (5): 2555–91. <a href="https://doi.org/10.1093/restud/rdad018">https://doi.org/10.1093/restud/rdad018</a>.
@@ -676,9 +686,11 @@ Wasserstein, Ronald L., Allen L. Schirm, and Nicole A. Lazar. 2019. <span>“Mov
 <ol>
 <li id="fn1"><p>The indicator whether treatment has been received by a unit is omitted since <span class="math inline">\(\bar Y_{tr,1}\)</span> implies treatment has been received while all other <span class="math inline">\(\bar Y_{\cdot, \cdot}\)</span> imply absence of treatment<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>The scenario is completely fictitious and any similarities to actual countries are purely coincidental.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>See e.g., <span class="citation" data-cites="cameron2005microeconometrics">Cameron and Trivedi (<a href="#ref-cameron2005microeconometrics" role="doc-biblioref">2005, 703f</a>.)</span> for details on estimation of fixed effects models.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Their notation is extremely complicated so I will atempt to present a simplified version<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>This has the caveat that a posterior density based on the MCMC draws has to be estimated.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>“<span class="math inline">\(\mathbb{1}"\)</span> is the indicator function that is <span class="math inline">\(1\)</span> if the condition is fulfilled and <span class="math inline">\(0\)</span> otherwise<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>See e.g., <span class="citation" data-cites="cameron2005microeconometrics">Cameron and Trivedi (<a href="#ref-cameron2005microeconometrics" role="doc-biblioref">2005, 703f</a>.)</span> for details on estimation of fixed effects models.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Their notation is extremely complicated so I will atempt to present a simplified version<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>note that in the pre-treatment period <span class="math inline">\(t&lt;g-1\)</span> and in the post-treatment period <span class="math inline">\(t&gt;g-1\)</span><a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>This has the caveat that a posterior density based on the MCMC draws has to be estimated.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main>
 <!-- /main column -->
